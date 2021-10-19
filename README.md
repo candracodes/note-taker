@@ -18,18 +18,16 @@ Note Taker is an application that can be used to write and save notes. This appl
 ## URLs
 - [GitHub Repo URL](https://github.com/candracodes/note-taker)
 - [Deployed Application URL](#)
-- [Video Walkthrough](#)
 
 ## Foreword
 
 - This application aims to accomplish the following:
   - [Adhere to the Acceptance Criteria](./assets/README.md)
-    - Given starter code, this applications then aims to:
-    - GET /notes ... which will return the notes.html file.
-    - GET * ... which will return the index.html file.
-    - GET /api/notes ... which will read the db.json file and return all saved notes as JSON.
-    - POST /api/notes ... which receives a new note to save on the request body, adds it to the db.json file, and then returns the new note to the client.
-    - GOAL
+  - Given starter code, this applications then aims to:
+  - GET /notes ... which will return the notes.html file.
+  - GET * ... which will return the index.html file.
+  - GET /api/notes ... which will read the db.json file and return all saved notes as JSON.
+  - POST /api/notes ... which receives a new note to save on the request body, adds it to the db.json file, and then returns the new note to the client.
 
 ## Usage
 

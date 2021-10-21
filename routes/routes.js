@@ -1,7 +1,6 @@
 /*
     TODO: REMAINING CHECKLIST
     - Figure out how to delete the data from both the front-end and backend
-    - After everything is working locally, check with tutor on the right way to host app on Heroku
 */
 
 // REQUIRE NECESSARY DEPENDANCIES
@@ -11,6 +10,8 @@ const path = require('path');
 // SET UP EXPORT MODULE TO READ/WRITE DATA FROM THE FILE SYSTEM
 module.exports = app => {
 
+    // TODO: NOTE TO CANDRA: The previous approach defined the readFile prior to creating the routes. It's important to establish the routes FIRST and read/write AFTER because everything is asynchronous and won't want to wait.
+
     // create route to capture notes
     app.get("/api/notes", function (req, res) {
 
@@ -18,10 +19,10 @@ module.exports = app => {
         fs.readFile("db/db.json", "utf8", (err, data) => {
             // account for error handling
             if (err) throw err;
-            // Since things run Asyn, when you try to read a file, then the rest of the program doesn't want to wait, so this needs to go into the readfile
+            // This is sort of like an ending statement, similar to a return, so it should be the last thing done
             res.json(JSON.parse(data));
         }); // end fs.readFile
-        
+
     });
 
     // create route to post notes
@@ -40,7 +41,7 @@ module.exports = app => {
             // add the new note to the database (ds.json)
             storedNotes.push(newNote);
             updateNotesDB(storedNotes);
-            // this is a full stop for the readFile
+            // this is a full stop for the readFile. I wrote it as a boolean just to ensure that it was working.
             res.send(true);
 
         }); // end fs.readFile
@@ -48,12 +49,34 @@ module.exports = app => {
         // return console.log("The following note has been added: " + newNote.title);
     });
 
-    // create a route that captures the notes with newly defined id that comes from UUID
-    // TODO: Consult tutor on how exactly to use UUID to ensure I'm doing things right
-    // TODO: This is not currently working, so if I don't get it to work, then I can't necessarily delete specific notes
+    // TODO: Attempt new route that adds IDs
     app.get("/api/notes/:id", function (req, res) {
-        console.log(req.params.id);
-        res.json();
+        console.log("Not sure how to approach this just yet, but will continue to investigate");
+    });
+
+    // Should receive a query parameter that contains the id of a note to delete. 
+    // To delete a note, I'll need to read all notes from the db.json file, remove the note with the given id property, and then rewrite the notes to the db.json file.
+    // At present, this route isn't doing anything, so it will require further investigation post-assignment
+    app.delete("/api/notes/:id", function (req, res) {
+        console.log("Not sure how to delete this just yet, but will continue to investigate");
+        /*
+        TODO: Continue exploration on how to handle delete action. Currently, this is how index.js handles delete:
+        const handleNoteDelete = (e) => {
+            e.stopPropagation();
+
+            const note = e.target;
+            const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
+
+            if (activeNote.id === noteId) {
+                activeNote = {};
+            }
+
+            deleteNote(noteId).then(() => {
+                getAndRenderNotes();
+                renderActiveNote();
+            });
+        };
+        */
     });
 
     // Get the route that will display notes onto notes.html page
@@ -61,12 +84,12 @@ module.exports = app => {
         res.sendFile(path.join(__dirname, "../public/notes.html"));
     });
 
-    // Get the route for index.html
+    // Get the route that will return index.html
     app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, "../public/index.html"));
     });
 
-    // Create function to update db.json when new news have been added (adding async because it didn't post in insomnia but DID post to the db.json)
+    // Create function to update db.json when new notes have been added (adding async because it didn't post in insomnia but DID post to the db.json)
     function updateNotesDB(notes) {
         fs.writeFile("db/db.json", JSON.stringify(notes, '\t'), err => {
             if (err) throw err;
@@ -75,72 +98,3 @@ module.exports = app => {
     } // end updateNotesDB
 
 } // end/module.exports
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// module.exports = app => {
-
-
-//     fs.readFile("db/db.json","utf8", (err, data) => {
-//         // account for error handling
-//         if (err) throw err;
-
-//         // create a variable that knows how to translate notes that will get submitted in the input form
-//         let notes = JSON.parse(data);
-
-//         // create route to capture notes
-//         // TODO: Consult tutor about reasoning for saying "/api/notes" rather than "routes/notes"
-//         app.get("/api/notes", function(req, res) {
-//             res.json(notes);
-//         });
-
-//         // create route to post notes
-//         app.post("/api/notes", function(req, res) {
-//             // create a variable to receive the new note
-//             let newNote = req.body;
-//             // add the new note to the database (ds.json)
-//             notes.push(newNote);
-//             // this function is defined below and will do a writeFile instead of readFile
-//             updateNotesDB();
-//             return console.log("The following note has been added: " +newNote.title);
-//         });
-
-//         // create a route that captures the notes with newly defined id that comes from UUID
-//         // TODO: Consult tutor on how exactly to use UUID to ensure I'm doing things right
-//         app.get("/api/notes/:id", function(req,res) {
-//             res.json(notes[req.params.id]);
-//         });
-
-//         // TODO: Get the route that will display notes onto notes.html page
-//         app.get('/notes', function(req,res) {
-//             res.sendFile(path.join(__dirname, "../public/notes.html"));
-//         });
-
-//         // TODO: Get the route for index.html (double-check this syntax with tutor)
-//         app.get('*', function(req,res) {
-//             res.sendFile(path.join(__dirname, "../public/index.html"));
-//         });
-
-//         // TODO: Create function to update db.json when new news have been added
-//         function updateNotesDB() {
-//             fs.writeFile("db/db.json",JSON.stringify(notes,'\t'),err => {
-//                 if (err) throw err;
-//                 return true;
-//             });
-//         } // end updateNotesDB
-
-//     }); // end fs.readFile
-
-// } // end/module.exports

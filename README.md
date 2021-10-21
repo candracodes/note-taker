@@ -17,7 +17,7 @@ Note Taker is an application that can be used to write and save notes. This appl
 
 ## URLs
 - [GitHub Repo URL](https://github.com/candracodes/note-taker)
-- [Deployed Application URL](#)
+- [Deployed Heroku Application URL](https://candra-note-taker.herokuapp.com/)
 
 ## Foreword
 
@@ -31,7 +31,7 @@ Note Taker is an application that can be used to write and save notes. This appl
 
 ## Usage
 
-- TBD
+- This application is invoked by running `npm start` in the command line.
 
 ## User-Story
 
@@ -63,9 +63,8 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 
 * This application should resemble the following screenshots and video walk-through:
 
-- ![Screenshot 1](./assets/screenshot1.png)
-- ![Screenshot 2](./assets/screenshot2.png)
-- [Video Walkthrough](#)
+![Screenshot 1](./assets/screenshot1.png)
+![Screenshot 2](./assets/screenshot2.png)
 
 ## Frameworks
 

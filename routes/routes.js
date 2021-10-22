@@ -1,16 +1,20 @@
 /*
     TODO: REMAINING CHECKLIST
-    - Figure out how to delete the data from both the front-end and backend
+    - Figure out how to delete the data from the front-end WITHOUT having to refresh (I figured out how to delete it from the backend)
+    - Continue exploration on UUID and how to generate a UUID
 */
 
 // REQUIRE NECESSARY DEPENDANCIES
 const fs = require('fs');
 const path = require('path');
+let db = require('../db/db.json'); // requiring this globally so I can use this in delete function
+// TODO: Look into UUID and how to generate UUID 
+// const uuid = require('uuid');
 
 // SET UP EXPORT MODULE TO READ/WRITE DATA FROM THE FILE SYSTEM
 module.exports = app => {
 
-    // TODO: NOTE TO CANDRA: The previous approach defined the readFile prior to creating the routes. It's important to establish the routes FIRST and read/write AFTER because everything is asynchronous and won't want to wait.
+    // NOTE TO CANDRA: The previous approach defined the readFile prior to creating the routes. It's important to establish the routes FIRST and read/write AFTER because everything is asynchronous and won't want to wait.
 
     // create route to capture notes
     app.get("/api/notes", function (req, res) {
@@ -20,6 +24,8 @@ module.exports = app => {
             // account for error handling
             if (err) throw err;
             // This is sort of like an ending statement, similar to a return, so it should be the last thing done
+            console.log(JSON.parse(data));
+            console.log("HEY!!!! START WORKING AT LINE 25!!!!");
             res.json(JSON.parse(data));
         }); // end fs.readFile
 
@@ -38,6 +44,9 @@ module.exports = app => {
             // Read the JSON, store the variable, append it, then write it
             let storedNotes = JSON.parse(data);
 
+            // just trying to come up with a good way to programmatically create an ID placement point in the array
+            newNote.id = storedNotes.length;
+
             // add the new note to the database (ds.json)
             storedNotes.push(newNote);
             updateNotesDB(storedNotes);
@@ -53,17 +62,41 @@ module.exports = app => {
     app.get("/api/notes/:id", function (req, res) {
         console.log("Not sure how to approach this just yet, but will continue to investigate");
     });
+    
 
     // Should receive a query parameter that contains the id of a note to delete. 
     // To delete a note, I'll need to read all notes from the db.json file, remove the note with the given id property, and then rewrite the notes to the db.json file.
     // At present, this route isn't doing anything, so it will require further investigation post-assignment
     app.delete("/api/notes/:id", function (req, res) {
-        console.log("Not sure how to delete this just yet, but will continue to investigate");
+        // So... whenever you add the colon as a part of the route, it's targeted by params. You can see all of the available calls if you console log what's below. To see even MORE, console log JUST the req
+        console.log(req.params.id);
+        
+        // filter through the array to find the specific ID I'm looking for, which is the ID of the trash icon that was clicked
+        let deletedNote = parseInt(req.params.id);
+        console.log(typeof deletedNote);
+        // console.log(db);
+
+        db = db.filter(function(testDelete){
+            // console.log(testDelete.id);
+            // console.log(deletedNote);
+            if (testDelete.id !== deletedNote) {
+
+                return true;
+            } 
+        });
+        // console.log(db);
+
+        // then... rewrite the db.json, SANS that recently filtered ID
+        fs.writeFile("db/db.json", JSON.stringify(db, '\t'), err => {
+            if (err) throw err;
+            return true;
+        });
+
+        // TODO: Continue exploration of the client side to figure out why it's not deleting on the front end without refreshing
         /*
-        TODO: Continue exploration on how to handle delete action. Currently, this is how index.js handles delete:
+        TODO: Below is the function that deletes notes from the client side code
         const handleNoteDelete = (e) => {
             e.stopPropagation();
-
             const note = e.target;
             const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
 
